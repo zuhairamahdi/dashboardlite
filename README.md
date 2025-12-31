@@ -1,6 +1,4 @@
-# UI/UX Dashboard Template
-
-# UI/UX Dashboard Template
+# Dashboard Template
 
 ![Dashboard Screenshot](docs/dark.png)
 
