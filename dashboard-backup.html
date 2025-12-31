@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .sidebar-item {
+            transition: all 0.2s;
+        }
+        .sidebar-item:hover {
+            background: #f3f4f6;
+        }
+        .stat-card {
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+            opacity: 0;
+        }
+        .submenu.open {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-72 bg-gray-50 flex-shrink-0 hidden lg:block relative">
+            <div class="p-6">
+                <div class="flex items-center gap-2 mb-8">
+                    <div class="w-12 h-12 bg-gray-900 rounded-xl flex items-center justify-center">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="16"/>
+                            <line x1="8" y1="12" x2="16" y2="12"/>
+                        </svg>
+                    </div>
+                </div>
+                <nav class="space-y-2">
+                    <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                        <span>Dashboard</span>
+                    </a>
+                    
+                    <div>
+                        <button onclick="toggleSubmenu()" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-900 w-full">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <line x1="3" y1="9" x2="21" y2="9"/>
+                                <line x1="9" y1="21" x2="9" y2="9"/>
+                            </svg>
+                            <span class="font-medium">Product</span>
+                            <svg id="chevron" class="w-4 h-4 ml-auto transition-transform transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                                <polyline points="18 15 12 9 6 15"/>
+                            </svg>
+                        </button>
+                        <div id="submenu" class="submenu open">
+                            <div class="bg-white rounded-xl shadow-sm p-2 space-y-1">
+                                <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg bg-gray-50 text-gray-900 font-medium text-sm">
+                                    <span>Overview</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+                                    <span>Drafts</span>
+                                    <span class="bg-orange-200 text-orange-800 text-xs font-semibold px-2 py-0.5 rounded-full">3</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+                                    <span>Released</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+                                    <span>Comments</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-between px-3 py-2 rounded-lg text-gray-500 hover:bg-gray-50 text-sm">
+                                    <span>Scheduled</span>
+                                    <span class="bg-green-200 text-green-800 text-xs font-semibold px-2 py-0.5 rounded-full">8</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                        <span>Customers</span>
+                        <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </a>
+                    
+                    <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                            <line x1="3" y1="6" x2="21" y2="6"/>
+                            <path d="M16 10a4 4 0 0 1-8 0"/>
+                        </svg>
+                        <span>Shop</span>
+                    </a>
+                    
+                    <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"/>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                        </svg>
+                        <span>Income</span>
+                        <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </a>
+                    
+                    <a href="#" class="sidebar-item flex items-center gap-3 px-3 py-2.5 rounded-lg text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M12 1v6m0 6v6m8.66-15.66l-4.25 4.24m-8.49 8.49l-4.24 4.24M23 12h-6m-6 0H1m20.66 8.66l-4.24-4.25m-8.49-8.49l-4.24-4.24"/>
+                        </svg>
+                        <span>Promote</span>
+                    </a>
+                </nav>
+            </div>
+            <!-- Bottom icons -->
+            <div class="absolute bottom-8 left-6 space-y-4 text-gray-400">
+                <button class="hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </button>
+                <button class="hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+                <button class="hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+                <div class="px-6 lg:px-8 py-4 flex items-center justify-between">
+                    <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
+                    <div class="flex items-center gap-4">
+                        <!-- Search -->
+                        <div class="hidden md:flex items-center bg-gray-50 rounded-lg px-4 py-2 w-80">
+                            <i class="fas fa-search text-gray-400 mr-3"></i>
+                            <input type="text" placeholder="Search anything..." class="bg-transparent outline-none text-sm w-full">
+                        </div>
+                        <!-- Create Button -->
+                        <button class="bg-gray-900 text-white px-6 py-2 rounded-lg font-medium hover:bg-gray-800 transition">
+                            Create
+                        </button>
+                        <!-- Icons -->
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="far fa-bell text-xl"></i>
+                        </button>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="far fa-comment-dots text-xl"></i>
+                        </button>
+                        <!-- User Avatar -->
+                        <img src="https://i.pravatar.cc/100?img=12" alt="User" class="w-10 h-10 rounded-full">
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="p-6 lg:p-8">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                    <!-- Left Column (2/3) -->
+                    <div class="xl:col-span-2 space-y-6">
+                        <!-- Overview Stats -->
+                        <div class="bg-white rounded-2xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-gray-900">Overview</h2>
+                                <select class="bg-gray-50 border-0 rounded-lg px-4 py-2 text-sm text-gray-600 outline-none cursor-pointer">
+                                    <option>Last month</option>
+                                    <option>Last week</option>
+                                    <option>Last year</option>
+                                </select>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                                <!-- Customers Card -->
+                                <div class="stat-card bg-gray-50 rounded-xl p-5">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <i class="fas fa-users text-gray-600"></i>
+                                        <span class="text-sm text-gray-600">Customers</span>
+                                    </div>
+                                    <div class="text-4xl font-bold text-gray-900 mb-2">1,293</div>
+                                    <div class="flex items-center gap-1 text-sm">
+                                        <i class="fas fa-arrow-up text-red-500"></i>
+                                        <span class="text-red-500 font-medium">36.8%</span>
+                                        <span class="text-gray-500">vs last month</span>
+                                    </div>
+                                </div>
+                                
+                                <!-- Balance Card -->
+                                <div class="stat-card bg-gray-50 rounded-xl p-5">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <i class="fas fa-wallet text-gray-600"></i>
+                                        <span class="text-sm text-gray-600">Balance</span>
+                                    </div>
+                                    <div class="text-4xl font-bold text-gray-900 mb-2">256k</div>
+                                    <div class="flex items-center gap-1 text-sm">
+                                        <i class="fas fa-arrow-up text-green-500"></i>
+                                        <span class="text-green-500 font-medium">36.8%</span>
+                                        <span class="text-gray-500">vs last month</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- New Customers Section -->
+                            <div class="mb-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">857 new customers today!</h3>
+                                <p class="text-sm text-gray-500">Send a welcome message to all new customers.</p>
+                            </div>
+
+                            <!-- Customer Avatars -->
+                            <div class="flex items-start gap-3">
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="https://i.pravatar.cc/100?img=1" alt="Gladyce" class="w-14 h-14 rounded-full border-2 border-white shadow">
+                                    <span class="text-xs text-gray-600">Gladyce</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="https://i.pravatar.cc/100?img=3" alt="Elbert" class="w-14 h-14 rounded-full border-2 border-white shadow">
+                                    <span class="text-xs text-gray-600">Elbert</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="https://i.pravatar.cc/100?img=7" alt="Dash" class="w-14 h-14 rounded-full border-2 border-white shadow">
+                                    <span class="text-xs text-gray-600">Dash</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="https://i.pravatar.cc/100?img=8" alt="Joyce" class="w-14 h-14 rounded-full border-2 border-white shadow">
+                                    <span class="text-xs text-gray-600">Joyce</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-2">
+                                    <img src="https://i.pravatar.cc/100?img=9" alt="Marina" class="w-14 h-14 rounded-full border-2 border-white shadow grayscale">
+                                    <span class="text-xs text-gray-600">Marina</span>
+                                </div>
+                                <div class="flex flex-col items-center gap-2">
+                                    <button class="w-14 h-14 rounded-full bg-white border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition">
+                                        <i class="fas fa-arrow-right text-gray-600"></i>
+                                    </button>
+                                    <span class="text-xs text-gray-600">View all</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product View Chart -->
+                        <div class="bg-white rounded-2xl shadow-sm p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-gray-900">Product view</h2>
+                                <select class="bg-gray-50 border-0 rounded-lg px-4 py-2 text-sm text-gray-600 outline-none cursor-pointer">
+                                    <option>Last 7 days</option>
+                                    <option>Last 30 days</option>
+                                    <option>Last 90 days</option>
+                                </select>
+                            </div>
+                            <div class="text-4xl font-bold text-gray-300 mb-6">$10.2m</div>
+                            <div class="relative h-64">
+                                <canvas id="productChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column (1/3) -->
+                    <div class="space-y-6">
+                        <!-- Popular Products -->
+                        <div class="bg-white rounded-2xl shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-6">Popular products</h2>
+                            <div class="space-y-4">
+                                <!-- Product 1 -->
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-200 to-green-400 flex-shrink-0 flex items-center justify-center">
+                                        <span class="text-2xl">🦎</span>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 truncate">Orypter - NFT UI Kit</h4>
+                                        <span class="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-md mt-1">Active</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-semibold text-gray-900">$3,250.00</div>
+                                    </div>
+                                </div>
+
+                                <!-- Product 2 -->
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-pink-400 flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 truncate">Bento Pro 2.0 Illustrations</h4>
+                                        <span class="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-md mt-1">Active</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-semibold text-gray-900">$7,890.00</div>
+                                        <button class="text-gray-400 hover:text-gray-600 mt-1">
+                                            <i class="fas fa-eye text-xs"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Product 3 -->
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-orange-600 flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 truncate">Fleet - travel shopping kit</h4>
+                                        <span class="inline-block px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-md mt-1">Offline</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-semibold text-gray-900">$1,500.00</div>
+                                    </div>
+                                </div>
+
+                                <!-- Product 4 -->
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-yellow-300 to-orange-400 flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 truncate">SimpleSocial UI Design Kit</h4>
+                                        <span class="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-md mt-1">Active</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-semibold text-gray-900">$9,999.99</div>
+                                    </div>
+                                </div>
+
+                                <!-- Product 5 -->
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-400 to-pink-500 flex-shrink-0"></div>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="text-sm font-medium text-gray-900 truncate">Bento Pro vol. 2</h4>
+                                        <span class="inline-block px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded-md mt-1">Active</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-semibold text-gray-900">$4,750.00</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="w-full mt-6 py-3 text-sm text-gray-600 hover:text-gray-900 font-medium border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                                All products
+                            </button>
+                        </div>
+
+                        <!-- Comments Section -->
+                        <div class="bg-white rounded-2xl shadow-sm p-6">
+                            <h2 class="text-lg font-semibold text-gray-900 mb-6">Comments</h2>
+                            <div class="space-y-4">
+                                <!-- Comment 1 -->
+                                <div class="flex gap-3">
+                                    <img src="https://i.pravatar.cc/100?img=8" alt="Joyce" class="w-10 h-10 rounded-full flex-shrink-0">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm">
+                                            <span class="font-semibold text-gray-900">Joyce</span>
+                                            <span class="text-gray-500"> on </span>
+                                            <span class="text-gray-900">Bento Pro 2.0</span>
+                                        </div>
+                                        <div class="text-xs text-gray-400 mt-0.5">08:07 AM</div>
+                                        <p class="text-sm text-gray-600 mt-2 leading-relaxed">Great work! When HTML version will be available?</p>
+                                    </div>
+                                </div>
+
+                                <!-- Comment 2 -->
+                                <div class="flex gap-3">
+                                    <img src="https://i.pravatar.cc/100?img=1" alt="Gladyce" class="w-10 h-10 rounded-full flex-shrink-0">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm">
+                                            <span class="font-semibold text-gray-900">Gladyce</span>
+                                            <span class="text-gray-500"> on </span>
+                                            <span class="text-gray-900">Food Delivery App</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Chart.js configuration
+        const ctx = document.getElementById('productChart').getContext('2d');
+
+        // Submenu toggle function
+        function toggleSubmenu() {
+            const submenu = document.getElementById('submenu');
+            const chevron = document.getElementById('chevron');
+            submenu.classList.toggle('open');
+            chevron.classList.toggle('rotate-180');
+        }
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['', '', '', '', '', '', '', ''],
+                datasets: [{
+
+                    data: [4, 6, 8, 10, 9.5, 7, 8.5, 9],
+                    backgroundColor: function(context) {
+                        const index = context.dataIndex;
+                        return index === 4 ? 'rgba(74, 222, 128, 0.5)' : 'rgba(229, 231, 235, 0.5)';
+                    },
+                    borderRadius: 8,
+                    borderSkipped: false,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: true,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return '$' + context.parsed.y + 'm';
+                            },
+                            title: function() {
+                                return '2.2m';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        display: false,
+                        beginAtZero: true,
+                        max: 12
+                    },
+                    x: {
+                        display: false,
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+
+        // Add tooltip indicator
+        const plugins = [{
+            afterDatasetsDraw: function(chart) {
+                const ctx = chart.ctx;
+                const activeElements = chart.getActiveElements();
+                
+                if (activeElements.length > 0) {
+                    const element = activeElements[0];
+                    const x = element.element.x;
+                    const y = element.element.y - 30;
+                    
+                    // Draw indicator
+                    ctx.save();
+                    ctx.fillStyle = '#4ADE80';
+                    ctx.beginPath();
+                    ctx.arc(x, y + 20, 4, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+        }];
+
+        // Simulate hover on 5th bar
+        setTimeout(() => {
+            chart.setActiveElements([{datasetIndex: 0, index: 4}]);
+            chart.update();
+        }, 500);
+    </script>
+</body>
+</html>
