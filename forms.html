@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forms & Inputs - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        .sidebar-item {
+            transition: all 0.2s;
+        }
+        .sidebar-item:hover {
+            background: #f3f4f6;
+        }
+        .dark .sidebar-item:hover {
+            background: #374151;
+        }
+        .mobile-sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        @media (max-width: 1023px) {
+            .mobile-sidebar {
+                transform: translateX(-100%);
+            }
+            .mobile-sidebar.open {
+                transform: translateX(0);
+            }
+        }
+        .backdrop-fade {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .backdrop-fade.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .submenu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out, margin 0.3s ease-out;
+            opacity: 0;
+        }
+        .submenu.open {
+            max-height: 500px;
+            opacity: 1;
+            margin-top: 0.5rem;
+        }
+        
+        .form-input {
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .dark .form-input:focus {
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+        .form-input.error {
+            border-color: #ef4444 !important;
+        }
+        .dark .form-input.error {
+            border-color: #f87171 !important;
+        }
+        .form-input.success {
+            border-color: #10b981 !important;
+        }
+        .dark .form-input.success {
+            border-color: #34d399 !important;
+        }
+        
+        input[type="checkbox"],
+        input[type="radio"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            cursor: pointer;
+        }
+        
+        input[type="range"] {
+            accent-color: #3b82f6;
+        }
+        
+        .toggle-checkbox {
+            transition: transform 0.3s ease-in-out;
+            transform: translateX(0);
+        }
+        .toggle-checkbox:checked {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+            transform: translateX(1.5rem);
+        }
+        .toggle-checkbox:checked ~ .toggle-label {
+            background-color: #3b82f6;
+        }
+        .dark .toggle-checkbox:checked ~ .toggle-label {
+            background-color: #60a5fa;
+        }
+        
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+        }
+        .file-upload input[type=file] {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        // Dark mode initialization
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+    </script>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebarBackdrop" class="backdrop-fade fixed inset-0 bg-black bg-opacity-50 z-20 hidden lg:hidden" onclick="toggleMobileSidebar()"></div>
+    
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Container -->
+        <div id="sidebarContainer" class="h-full"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header Container -->
+            <div id="topbarContainer"></div>
+
+            <!-- Forms Content -->
+            <div class="p-6 lg:p-8">
+                <!-- Page Header -->
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">Forms & Inputs</h1>
+                    <p class="text-gray-500 dark:text-gray-400 mt-2">All input types and form elements with validation</p>
+                </div>
+
+                <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                    <!-- Basic Inputs -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 transition-colors duration-200">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Basic Inputs</h2>
+                        
+                        <form class="space-y-4" id="basicForm">
+                            <!-- Text Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Full Name <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="fullName"
+                                    placeholder="John Doe"
+                                    required
+                                    minlength="3"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Minimum 3 characters</p>
+                                <p class="text-xs text-red-500 mt-1 hidden error-message">This field is required</p>
+                                <p class="text-xs text-green-500 mt-1 hidden success-message">Looks good!</p>
+                            </div>
+
+                            <!-- Email Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Email Address <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="email" 
+                                    name="email"
+                                    placeholder="john@example.com"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                                <p class="text-xs text-red-500 mt-1 hidden error-message">Please enter a valid email</p>
+                                <p class="text-xs text-green-500 mt-1 hidden success-message">Valid email address</p>
+                            </div>
+
+                            <!-- Password Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Password <span class="text-red-500">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input 
+                                        type="password" 
+                                        name="password"
+                                        id="password"
+                                        placeholder="••••••••"
+                                        required
+                                        minlength="8"
+                                        class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 pr-10"
+                                    >
+                                    <button type="button" onclick="togglePassword('password', 'eye1')" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+                                        <i class="fas fa-eye" id="eye1"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">At least 8 characters</p>
+                                <p class="text-xs text-red-500 mt-1 hidden error-message">Password must be at least 8 characters</p>
+                                <p class="text-xs text-green-500 mt-1 hidden success-message">Strong password</p>
+                            </div>
+
+                            <!-- Tel Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Phone Number
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    name="phone"
+                                    placeholder="+1 (555) 000-0000"
+                                    pattern="[+]?[0-9\s\-\(\)]+"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <!-- URL Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Website URL
+                                </label>
+                                <input 
+                                    type="url" 
+                                    name="website"
+                                    placeholder="https://example.com"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Number and Date Inputs -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 transition-colors duration-200">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Number & Date Inputs</h2>
+                        
+                        <form class="space-y-4">
+                            <!-- Number Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Age
+                                </label>
+                                <input 
+                                    type="number" 
+                                    name="age"
+                                    placeholder="25"
+                                    min="18"
+                                    max="100"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Between 18 and 100</p>
+                            </div>
+
+                            <!-- Range Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Price Range: <span id="rangeValue" class="text-blue-600 dark:text-blue-400">$50</span>
+                                </label>
+                                <input 
+                                    type="range" 
+                                    name="price"
+                                    min="0"
+                                    max="100"
+                                    value="50"
+                                    oninput="document.getElementById('rangeValue').textContent='$'+this.value"
+                                    class="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer"
+                                >
+                            </div>
+
+                            <!-- Date Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Date of Birth
+                                </label>
+                                <input 
+                                    type="date" 
+                                    name="dob"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <!-- Time Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Appointment Time
+                                </label>
+                                <input 
+                                    type="time" 
+                                    name="time"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <!-- DateTime Local Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Meeting Date & Time
+                                </label>
+                                <input 
+                                    type="datetime-local" 
+                                    name="meeting"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <!-- Color Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Brand Color
+                                </label>
+                                <input 
+                                    type="color" 
+                                    name="color"
+                                    value="#3b82f6"
+                                    class="form-input h-12 w-full px-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer"
+                                >
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Select and Textarea -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 transition-colors duration-200">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Select & Textarea</h2>
+                        
+                        <form class="space-y-4">
+                            <!-- Select -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Country <span class="text-red-500">*</span>
+                                </label>
+                                <select 
+                                    name="country"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                                    <option value="">Select a country</option>
+                                    <option value="us">United States</option>
+                                    <option value="uk">United Kingdom</option>
+                                    <option value="ca">Canada</option>
+                                    <option value="au">Australia</option>
+                                    <option value="de">Germany</option>
+                                    <option value="fr">France</option>
+                                </select>
+                            </div>
+
+                            <!-- Multiple Select -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Interests (Hold Ctrl/Cmd for multiple)
+                                </label>
+                                <select 
+                                    name="interests"
+                                    multiple
+                                    size="4"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                                    <option value="design">Design</option>
+                                    <option value="development">Development</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="sales">Sales</option>
+                                    <option value="support">Support</option>
+                                </select>
+                            </div>
+
+                            <!-- Textarea -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Message <span class="text-red-500">*</span>
+                                </label>
+                                <textarea 
+                                    name="message"
+                                    rows="4"
+                                    placeholder="Enter your message..."
+                                    required
+                                    minlength="10"
+                                    maxlength="500"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 resize-none"
+                                ></textarea>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">10-500 characters</p>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Checkboxes and Radios -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 transition-colors duration-200">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Checkboxes & Radio Buttons</h2>
+                        
+                        <form class="space-y-6">
+                            <!-- Checkboxes -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                    Select Features
+                                </label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="checkbox" name="features" value="notifications" class="text-blue-600">
+                                        <span class="text-gray-700 dark:text-gray-300">Email Notifications</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="checkbox" name="features" value="newsletter" class="text-blue-600" checked>
+                                        <span class="text-gray-700 dark:text-gray-300">Newsletter Subscription</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="checkbox" name="features" value="updates" class="text-blue-600">
+                                        <span class="text-gray-700 dark:text-gray-300">Product Updates</span>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="checkbox" name="features" value="tips" class="text-blue-600">
+                                        <span class="text-gray-700 dark:text-gray-300">Tips & Tricks</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Radio Buttons -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+                                    Account Type <span class="text-red-500">*</span>
+                                </label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="radio" name="accountType" value="personal" class="text-blue-600" checked>
+                                        <div>
+                                            <div class="text-gray-900 dark:text-gray-100 font-medium">Personal</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">For individual use</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="radio" name="accountType" value="business" class="text-blue-600">
+                                        <div>
+                                            <div class="text-gray-900 dark:text-gray-100 font-medium">Business</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">For company use</div>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                        <input type="radio" name="accountType" value="enterprise" class="text-blue-600">
+                                        <div>
+                                            <div class="text-gray-900 dark:text-gray-100 font-medium">Enterprise</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400">For large organizations</div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Toggle Switch -->
+                            <div>
+                                <label class="flex items-center justify-between cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700/50 p-2 rounded-lg transition">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-700 dark:text-gray-300">Enable Two-Factor Auth</div>
+                                        <div class="text-xs text-gray-500 dark:text-gray-400">Add extra security to your account</div>
+                                    </div>
+                                    <div class="relative inline-block w-12 align-middle select-none">
+                                        <input type="checkbox" name="twoFactor" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out">
+                                        <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 dark:bg-gray-600 cursor-pointer"></label>
+                                    </div>
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- File Upload -->
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 transition-colors duration-200">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">File Upload</h2>
+                        
+                        <form class="space-y-4">
+                            <!-- Single File -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Profile Picture
+                                </label>
+                                <div class="file-upload">
+                                    <button type="button" class="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-400 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition">
+                                        <i class="fas fa-cloud-upload-alt text-2xl mb-2"></i>
+                                        <p class="text-sm">Click to upload or drag and drop</p>
+                                        <p class="text-xs mt-1">PNG, JPG up to 5MB</p>
+                                    </button>
+                                    <input type="file" name="avatar" accept="image/*">
+                                </div>
+                            </div>
+
+                            <!-- Multiple Files -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Documents (Multiple)
+                                </label>
+                                <input 
+                                    type="file" 
+                                    name="documents"
+                                    multiple
+                                    accept=".pdf,.doc,.docx"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-900 dark:file:text-blue-300"
+                                >
+                            </div>
+
+                            <!-- Search Input -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Search
+                                </label>
+                                <div class="relative">
+                                    <input 
+                                        type="search" 
+                                        name="search"
+                                        placeholder="Search..."
+                                        class="form-input w-full px-4 py-2.5 pl-10 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                    >
+                                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Form Validation Example -->
+                    <div class="xl:col-span-2 bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 transition-colors duration-200">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">Complete Form with Validation</h2>
+                        
+                        <form id="validationForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    First Name <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="firstName"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Last Name <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="lastName"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Email <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="email" 
+                                    name="emailValidation"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Phone <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    name="phoneValidation"
+                                    required
+                                    pattern="[0-9]{10}"
+                                    placeholder="1234567890"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    Address <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="address"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    City <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="city"
+                                    required
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                    ZIP Code <span class="text-red-500">*</span>
+                                </label>
+                                <input 
+                                    type="text" 
+                                    name="zip"
+                                    required
+                                    pattern="[0-9]{5}"
+                                    placeholder="12345"
+                                    class="form-input w-full px-4 py-2.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100"
+                                >
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="flex items-center gap-2 cursor-pointer">
+                                    <input type="checkbox" name="terms" required class="text-blue-600">
+                                    <span class="text-sm text-gray-700 dark:text-gray-300">
+                                        I agree to the <a href="#" class="text-blue-600 dark:text-blue-400 hover:underline">Terms and Conditions</a> <span class="text-red-500">*</span>
+                                    </span>
+                                </label>
+                            </div>
+
+                            <div class="md:col-span-2 flex gap-3">
+                                <button 
+                                    type="submit"
+                                    class="px-6 py-2.5 bg-gray-900 dark:bg-gray-100 text-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition"
+                                >
+                                    Submit Form
+                                </button>
+                                <button 
+                                    type="reset"
+                                    class="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                                >
+                                    Reset
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Components JS -->
+    <script src="js/components.js"></script>
+    
+    <script>
+        // Load components
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAllComponents();
+        });
+
+        // Toggle password visibility
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        // Basic form validation
+        const basicForm = document.getElementById('basicForm');
+        if (basicForm) {
+            const inputs = basicForm.querySelectorAll('input[required]');
+            
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    validateInput(this);
+                });
+                
+                input.addEventListener('input', function() {
+                    if (this.classList.contains('error') || this.classList.contains('success')) {
+                        validateInput(this);
+                    }
+                });
+            });
+        }
+
+        function validateInput(input) {
+            const parent = input.parentElement;
+            const errorMsg = parent.querySelector('.error-message');
+            const successMsg = parent.querySelector('.success-message');
+            
+            if (input.validity.valid && input.value.length > 0) {
+                input.classList.remove('error');
+                input.classList.add('success');
+                if (errorMsg) errorMsg.classList.add('hidden');
+                if (successMsg) successMsg.classList.remove('hidden');
+            } else if (!input.validity.valid || (input.required && input.value.length === 0)) {
+                input.classList.add('error');
+                input.classList.remove('success');
+                if (errorMsg) errorMsg.classList.remove('hidden');
+                if (successMsg) successMsg.classList.add('hidden');
+            } else {
+                input.classList.remove('error', 'success');
+                if (errorMsg) errorMsg.classList.add('hidden');
+                if (successMsg) successMsg.classList.add('hidden');
+            }
+        }
+
+        // Complete form validation
+        const validationForm = document.getElementById('validationForm');
+        if (validationForm) {
+            validationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let isValid = true;
+                const formInputs = this.querySelectorAll('input[required]');
+                
+                formInputs.forEach(input => {
+                    if (!input.validity.valid || (input.type === 'checkbox' && !input.checked)) {
+                        input.classList.add('error');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('error');
+                        input.classList.add('success');
+                    }
+                });
+                
+                if (isValid) {
+                    alert('Form submitted successfully! ✓');
+                    this.reset();
+                    formInputs.forEach(input => {
+                        input.classList.remove('success', 'error');
+                    });
+                } else {
+                    alert('Please fill in all required fields correctly.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
