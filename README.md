@@ -1,5 +1,10 @@
 # UI/UX Dashboard Template
 
+# UI/UX Dashboard Template
+
+![Dashboard Screenshot](docs/dark.png)
+
+
 A responsive, dark-mode enabled dashboard template with reusable components.
 
 ## File Structure
