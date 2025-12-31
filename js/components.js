@@ -57,5 +57,23 @@ function toggleSubmenu() {
     }
 }
 
+// Notifications dropdown toggle (global function)
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationsDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+}
+
+// Close notifications dropdown when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notificationsDropdown');
+    const button = event.target.closest('button[onclick="toggleNotifications()"]');
+    
+    if (dropdown && !dropdown.contains(event.target) && !button) {
+        dropdown.classList.add('hidden');
+    }
+});
+
 // Load components when DOM is ready
 document.addEventListener('DOMContentLoaded', loadAllComponents);
