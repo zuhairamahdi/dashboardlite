@@ -124,8 +124,47 @@
             <button class="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition">
                 <i class="far fa-comment-dots text-xl"></i>
             </button>
-            <!-- User Avatar -->
-            <img src="https://i.pravatar.cc/100?img=12" alt="User" class="w-10 h-10 rounded-full">
-        </div>
-    </div>
-</header>
+            <!-- User Avatar Dropdown -->
+            <div class="relative">
+                <button onclick="toggleUserMenu()" class="flex items-center gap-2 hover:opacity-80 transition">
+                    <img src="https://i.pravatar.cc/100?img=12" alt="User" class="w-10 h-10 rounded-full">
+                    <i class="fas fa-chevron-down text-xs text-gray-400 dark:text-gray-500"></i>
+                </button>
+                
+                <!-- Dropdown Menu -->
+                <div id="userMenuDropdown" class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden z-50">
+                    <!-- User Info -->
+                    <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+                        <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">John Doe</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">john@example.com</p>
+                    </div>
+                    
+                    <!-- Menu Items -->
+                    <div class="py-2">
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <i class="fas fa-user w-4"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <i class="fas fa-cog w-4"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <i class="fas fa-bell w-4"></i>
+                            <span>Notifications</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition">
+                            <i class="fas fa-question-circle w-4"></i>
+                            <span>Help & Support</span>
+                        </a>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="border-t border-gray-200 dark:border-gray-700 py-2">
+                        <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition">
+                            <i class="fas fa-sign-out-alt w-4"></i>
+                            <span>Sign Out</span>
+                        </a>
+                    </div>
+                </div>
+            </div>

@@ -65,13 +65,28 @@ function toggleNotifications() {
     }
 }
 
-// Close notifications dropdown when clicking outside
+// User menu dropdown toggle (global function)
+function toggleUserMenu() {
+    const dropdown = document.getElementById('userMenuDropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+}
+
+// Close dropdowns when clicking outside
 document.addEventListener('click', function(event) {
-    const dropdown = document.getElementById('notificationsDropdown');
-    const button = event.target.closest('button[onclick="toggleNotifications()"]');
+    const notificationsDropdown = document.getElementById('notificationsDropdown');
+    const notificationsButton = event.target.closest('button[onclick="toggleNotifications()"]');
     
-    if (dropdown && !dropdown.contains(event.target) && !button) {
-        dropdown.classList.add('hidden');
+    const userMenuDropdown = document.getElementById('userMenuDropdown');
+    const userMenuButton = event.target.closest('button[onclick="toggleUserMenu()"]');
+    
+    if (notificationsDropdown && !notificationsDropdown.contains(event.target) && !notificationsButton) {
+        notificationsDropdown.classList.add('hidden');
+    }
+    
+    if (userMenuDropdown && !userMenuDropdown.contains(event.target) && !userMenuButton) {
+        userMenuDropdown.classList.add('hidden');
     }
 });
 
